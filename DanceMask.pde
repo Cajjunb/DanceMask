@@ -7,7 +7,6 @@ int LARGURA = 300;
 
 //Variaveis globais no contexto do ambiente
 PImage background;
-OpticalFlow hsObjeto;
 cameraInput camera;
 PrintWriter FILE1;
 PrintWriter FILE2;
@@ -15,25 +14,29 @@ float[][][] fluxoAmbiente;
 
 
 void setup() {
-    size(622,350);
+    //Seta o tamanho da tela.
+    //Tenta instanciar a camera se der 
+    //instanciando o vetor FLuxo
+    //Carrega imagem do background para ser a textura!
+    size(640,480);
+    frameRate(15);
     try{
-        print("\t############### TRY!!#####################\n");
+        print("\t############### INSTANCIANDO CAMERA #####################\n");
         //Instancia o controlador da camera 
         camera = new cameraInput(this);
     }catch(Exception e){
-        print("\t############### EXCESSAO!!#####################");
+        print("\t############### ERRO! NAO FOI POSSIVEL INSTANCIAR CAMERA!!#####################");
     }
-    //instanciando o vetor FLuxo
     fluxoAmbiente = new float[ALTURA][LARGURA][2];
-    background = loadImage("texture.jpeg");
-       
+    background = loadImage("sand3.jpg");
 }
 
 void draw(){
-    background(background);   
-    //camera.desenhaCamera();
-    /*CALCULA o fluxo da imagem, depois retorna para ser usada para as células se movimentarem */
+    //Coloca o background
+    //Calcula Movimento do contorno
+    //Desenha na tela o vulto
+    image(background,0,0);   
     camera.calculaFluxoOpenCV();
-    fluxoAmbiente = camera.getFluxoAmbiente();
+    camera.displayFluxoCorMedia();
     
 }

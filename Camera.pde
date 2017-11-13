@@ -28,14 +28,11 @@ class cameraInput {
   private final int LIMITE_MIN_Y = 1;
 
   public OpencvInterface interfaceCV;
-
-  public OpticalFlow hsObject;
-
   DanceMask ambiente;
 
   // Construtor, incializa a camera e verifica se eh possivel ser utilizado
   cameraInput(DanceMask ambiente) {
-    this.cameraPrincipal = new Capture(ambiente, 640, 480, 15);
+    this.cameraPrincipal = new Capture(ambiente, 640, 480, 30);
     this.cameraPrincipal.start();
     this.frameAnterior = createImage(this.cameraPrincipal.width, this.cameraPrincipal.height, RGB);
     this.frame1 = createImage(this.cameraPrincipal.width, this.cameraPrincipal.height, RGB);
@@ -43,7 +40,6 @@ class cameraInput {
     this.movimentoDetectado = new IntList();
     //Setando o ambiente
     this.ambiente = ambiente;
-    hsObjeto = new OpticalFlow(40, 30);
     //Inicializando o OpenCV
     this.interfaceCV = new OpencvInterface(this.ambiente, 480, 640);
   }
@@ -62,7 +58,6 @@ class cameraInput {
     this.frame1.loadPixels();
     this.frame2.loadPixels();
     this.fluxo = this.interfaceCV.calculaHornSchunck(this.frame1,this.frame2);
-    displayFluxo();
     return ;
   }  
 
@@ -81,7 +76,6 @@ class cameraInput {
     float[][][][] fluxo = this.interfaceCV.calculaHornSchunck(this.frame1, this.frame2, rowsAmbiente, colsAmbiente);
     this.fluxo = fluxo[0];
     this.fluxoAmbiente = fluxo[1];
-    displayFluxo();
    return ;
   }    
 
@@ -89,12 +83,12 @@ class cameraInput {
 
   //Mostra FLuxo
   void displayFluxo() {
-    //image(this.frame2, 0, 0);
-    //image(this.frame2, 400, 0);
-    blendMode(MULTIPLY);
+    // cor auxiliar 
     //PRINTANDO A REPRESENTACAO
-    for (int i = 0; i < this.cameraPrincipal.height; ++i) {
-      for (int j = 0; j < this.cameraPrincipal.width; ++j) {
+    color c;
+    tint(255,30);
+    for (int i = 0; i < this.cameraPrincipal.height; i+=20) {
+      for (int j = 0; j < this.cameraPrincipal.width; j+=20) {
         float valorU      = fluxo[i][j][0];
         float valorV      = fluxo[i][j][1];
         //             if(this.opencvProcessador != null){
@@ -129,6 +123,33 @@ class cameraInput {
       }
     }
   }
+
+  //Mostra FLuxo
+  void displayFluxoCorMedia() {
+    // cor auxiliar 
+    //PRINTANDO A REPRESENTACAO
+    blendMode(BLEND);
+    color cor;
+    for (int i = 0; i < this.cameraPrincipal.height; ++i) {
+      for (int j = 0; j < this.cameraPrincipal.width; ++j) {
+        cor = 0;
+        float valorU      = fluxo[i][j][0];
+        float valorV      = fluxo[i][j][1];
+        //             if(this.opencvProcessador != null){
+        //                 if(this.opencvProcessador.getFlowAt(i,j)!= null)
+        if (valorU != 0 && valorV != 0 && abs(valorU)> LIMITE_MIN_X && abs(valorV) > LIMITE_MIN_Y  ) {
+          // Calculando o angulo para ser mostrado, levamos em conta se o numero passou de -1 e 1
+          cor += get((j+1)%this.cameraPrincipal.width,i)/4 ;
+          cor += get((j-1)%this.cameraPrincipal.width,i)/4 ;
+          cor += get(j,(i+1)%this.cameraPrincipal.height)/4 ;
+          cor += get(j,(i-1)%this.cameraPrincipal.height)/4 ;
+          stroke(000);
+          point(j, i);
+        }
+      }
+    }
+  }
+
 
   //Mostra FLuxo
   void displayFluxo(int rowsAmbiente, int colsAmbiente) {
