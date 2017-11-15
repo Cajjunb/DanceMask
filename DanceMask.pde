@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 
 int ALTURA = 400;
 int LARGURA = 300;
+int DESLOCAMENTOCOR = 15;
 
 //Variaveis globais no contexto do ambiente
 PImage background;
@@ -28,15 +29,15 @@ void setup() {
         print("\t############### ERRO! NAO FOI POSSIVEL INSTANCIAR CAMERA!!#####################");
     }
     fluxoAmbiente = new float[ALTURA][LARGURA][2];
-    background = loadImage("sand3.jpg");
+    background = loadImage("orgycalidoscope.jpg");
 }
 
 void draw(){
     //Coloca o background
     //Calcula Movimento do contorno
     //Desenha na tela o vulto
-    image(background,0,0);   
+    background(0x000);   
+    camera.desenhaCamera(width,height);
     camera.calculaFluxoOpenCV();
-    camera.displayFluxoCorMedia();
-    
+    camera.displayFluxoBackground(width,height,background);
 }

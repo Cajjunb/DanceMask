@@ -32,7 +32,7 @@ class cameraInput {
 
   // Construtor, incializa a camera e verifica se eh possivel ser utilizado
   cameraInput(DanceMask ambiente) {
-    this.cameraPrincipal = new Capture(ambiente, 640, 480, 30);
+    this.cameraPrincipal = new Capture(ambiente, 320, 240, 30);
     this.cameraPrincipal.start();
     this.frameAnterior = createImage(this.cameraPrincipal.width, this.cameraPrincipal.height, RGB);
     this.frame1 = createImage(this.cameraPrincipal.width, this.cameraPrincipal.height, RGB);
@@ -41,7 +41,7 @@ class cameraInput {
     //Setando o ambiente
     this.ambiente = ambiente;
     //Inicializando o OpenCV
-    this.interfaceCV = new OpencvInterface(this.ambiente, 480, 640);
+    this.interfaceCV = new OpencvInterface(this.ambiente, 240, 320);
   }
 
 
@@ -123,28 +123,66 @@ class cameraInput {
       }
     }
   }
-
   //Mostra FLuxo
-  void displayFluxoCorMedia() {
+  void displayFluxoBackground(int ScreenWidth, int ScreenHeight, PImage background) {
     // cor auxiliar 
     //PRINTANDO A REPRESENTACAO
     blendMode(BLEND);
-    color cor;
     for (int i = 0; i < this.cameraPrincipal.height; ++i) {
       for (int j = 0; j < this.cameraPrincipal.width; ++j) {
-        cor = 0;
         float valorU      = fluxo[i][j][0];
         float valorV      = fluxo[i][j][1];
         //             if(this.opencvProcessador != null){
         //                 if(this.opencvProcessador.getFlowAt(i,j)!= null)
         if (valorU != 0 && valorV != 0 && abs(valorU)> LIMITE_MIN_X && abs(valorV) > LIMITE_MIN_Y  ) {
-          // Calculando o angulo para ser mostrado, levamos em conta se o numero passou de -1 e 1
-          cor += get((j+1)%this.cameraPrincipal.width,i)/4 ;
-          cor += get((j-1)%this.cameraPrincipal.width,i)/4 ;
-          cor += get(j,(i+1)%this.cameraPrincipal.height)/4 ;
-          cor += get(j,(i-1)%this.cameraPrincipal.height)/4 ;
-          stroke(000);
-          point(j, i);
+            // Calculando o angulo para ser mostrado, levamos em conta se o numero passou de -1 e 1
+           int jAux = (ScreenWidth * j/ cameraPrincipal.width );
+           int iAux = (ScreenHeight * i/ cameraPrincipal.height);
+           color c = background.get(jAux,iAux);
+           stroke(c);
+           point(jAux, iAux);
+           //ellipse(jAux,iAux,2,2)[iAux*cameraPrincipal.width+jAux];   
+        }
+      }
+    }
+  }
+
+  //Mostra FLuxo
+  void displayFluxoCorMedia(int ScreenWidth, int ScreenHeight, int deslocamento) {
+    // cor auxiliar 
+    //PRINTANDO A REPRESENTACAO
+    blendMode(BLEND);
+    int r,g,b;
+    for (int i = 0; i < this.cameraPrincipal.height; ++i) {
+      for (int j = 0; j < this.cameraPrincipal.width; ++j) {
+        r = 0;
+        g = 0;
+        b = 0;
+        int cor = 0;
+        float valorU      = fluxo[i][j][0];
+        float valorV      = fluxo[i][j][1];
+        //             if(this.opencvProcessador != null){
+        //                 if(this.opencvProcessador.getFlowAt(i,j)!= null)
+        if (valorU != 0 && valorV != 0 && abs(valorU)> LIMITE_MIN_X && abs(valorV) > LIMITE_MIN_Y  ) {
+            // Calculando o angulo para ser mostrado, levamos em conta se o numero passou de -1 e 1
+           int jAux = (ScreenWidth * j/ cameraPrincipal.width );
+           int iAux = (ScreenHeight * i/ cameraPrincipal.height);
+           for(int k = 0; k <4 ; k++){
+               if(k == 0)
+                   cor = get((jAux+1),iAux) ;
+               else if(k == 1)
+                   cor = get((jAux-1),iAux) ;    
+               else if(k == 2)
+                   cor = get(jAux,(iAux+1)) ;   
+               else if(k == 3)   
+                   cor = get(jAux,(iAux-1)) ;
+               r   += (int)((cor>>16)& 0xFF) / 4 - deslocamento;
+               g   += (int)(((cor<<8)>>16)& 0xFF) / 4 - deslocamento;
+               b   += (int)(((cor<<16)>>16)& 0xFF ) / 4 -deslocamento;
+           }
+           stroke(r,g,b);
+           point(jAux, iAux);
+           //ellipse(jAux,iAux,2,2);   
         }
       }
     }
@@ -250,7 +288,16 @@ class cameraInput {
     }
     image(this.cameraPrincipal, 400, 0);
     image(this.frameAnterior, 0, 0);
-    ;
+  }
+  // funcao que faz o output da camera e guarda o frames para o tracking da camera. Versao que faz o resize de acordo com os argumentos
+  void desenhaCamera(int largura, int altura) {
+    if (this.cameraPrincipal.available() == true) {  
+      this.frameAnterior.copy(this.cameraPrincipal, 0, 0, this.cameraPrincipal.width, this.cameraPrincipal.height, 0, 0, this.cameraPrincipal.width, this.cameraPrincipal.height);
+      this.frameAnterior.updatePixels();
+      this.frameAnterior.resize(largura,altura);
+      this.cameraPrincipal.read();
+    }
+    image(this.frameAnterior, 0, 0);
   }
   //RETORNO DO FLUXO DA CAMERA 
   float[][][] getFluxo() {

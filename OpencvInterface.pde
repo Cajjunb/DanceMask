@@ -6,15 +6,13 @@ class OpencvInterface{
     private int rowsFrame;
     private int colsFrame;
     public long tempoProcessamento;
-    
-    
     private OpenCV opencvProcessador;
     
     OpencvInterface(DanceMask ambiente,int rows,int cols){
         this.rowsFrame = rows;
         this.colsFrame = cols;
         this.opencvProcessador = new OpenCV(ambiente,cols,rows);
-        this.opencvProcessador.flow.setPolySigma(10);
+        this.opencvProcessador.flow.setPolySigma(1);
         print(this.opencvProcessador.flow.getPolySigma()+"\n");
         print(this.opencvProcessador.flow.getPyramidScale()+"\n");
     }
