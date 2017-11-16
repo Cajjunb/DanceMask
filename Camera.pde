@@ -124,7 +124,7 @@ class cameraInput {
     }
   }
   //Mostra FLuxo
-  void displayFluxoBackground(int ScreenWidth, int ScreenHeight, PImage background) {
+  void displayFluxoBackgroundAprox(int ScreenWidth, int ScreenHeight, PImage background) {
     // cor auxiliar 
     //PRINTANDO A REPRESENTACAO
     blendMode(BLEND);
@@ -146,6 +146,30 @@ class cameraInput {
       }
     }
   }
+  
+  //Mostra FLuxo
+  void displayFluxoBackground(int ScreenWidth, int ScreenHeight, PImage background) {
+    int fator = ScreenHeight/this.cameraPrincipal.height;
+    // cor auxiliar 
+    //PRINTANDO A REPRESENTACAO
+    blendMode(BLEND);
+    for (int i = 0; i < this.cameraPrincipal.height; ++i) {
+      for (int j = 0; j < this.cameraPrincipal.width; ++j) {
+        float valorU      = fluxo[i][j][0];
+        float valorV      = fluxo[i][j][1];
+        //             if(this.opencvProcessador != null){
+        //                 if(this.opencvProcessador.getFlowAt(i,j)!= null)
+        if (valorU != 0 && valorV != 0 && abs(valorU)> LIMITE_MIN_X && abs(valorV) > LIMITE_MIN_Y  ) {
+            // Calculando o angulo para ser mostrado, levamos em conta se o numero passou de -1 e 1
+          int jAux = (ScreenWidth * j/ cameraPrincipal.width );
+          int iAux = (ScreenHeight * i/ cameraPrincipal.height);
+          PImage c = background.get(jAux,iAux,fator,fator);
+          image(c,jAux,iAux);   
+        }
+      }
+    }
+  }
+
 
   //Mostra FLuxo
   void displayFluxoCorMedia(int ScreenWidth, int ScreenHeight, int deslocamento) {
@@ -292,11 +316,11 @@ class cameraInput {
   // funcao que faz o output da camera e guarda o frames para o tracking da camera. Versao que faz o resize de acordo com os argumentos
   void desenhaCamera(int largura, int altura) {
     if (this.cameraPrincipal.available() == true) {  
-      this.frameAnterior.copy(this.cameraPrincipal, 0, 0, this.cameraPrincipal.width, this.cameraPrincipal.height, 0, 0, this.cameraPrincipal.width, this.cameraPrincipal.height);
+      this.frameAnterior.copy(this.cameraPrincipal, 0, 0, largura, altura, 0, 0, largura, altura);
       this.frameAnterior.updatePixels();
-      this.frameAnterior.resize(largura,altura);
       this.cameraPrincipal.read();
     }
+    this.frameAnterior.resize(largura,altura);
     image(this.frameAnterior, 0, 0);
   }
   //RETORNO DO FLUXO DA CAMERA 

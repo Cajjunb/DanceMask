@@ -12,7 +12,7 @@ class OpencvInterface{
         this.rowsFrame = rows;
         this.colsFrame = cols;
         this.opencvProcessador = new OpenCV(ambiente,cols,rows);
-        this.opencvProcessador.flow.setPolySigma(1);
+        this.opencvProcessador.flow.setPolySigma(2);
         print(this.opencvProcessador.flow.getPolySigma()+"\n");
         print(this.opencvProcessador.flow.getPyramidScale()+"\n");
     }

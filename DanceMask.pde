@@ -30,6 +30,7 @@ void setup() {
     }
     fluxoAmbiente = new float[ALTURA][LARGURA][2];
     background = loadImage("orgycalidoscope.jpg");
+    background.resize(width,height);
 }
 
 void draw(){
@@ -37,7 +38,7 @@ void draw(){
     //Calcula Movimento do contorno
     //Desenha na tela o vulto
     background(0x000);   
-    camera.desenhaCamera(width,height);
     camera.calculaFluxoOpenCV();
+    camera.desenhaCamera(width,height);
     camera.displayFluxoBackground(width,height,background);
 }
