@@ -6,6 +6,8 @@ int ALTURA = 400;
 int LARGURA = 300;
 int DESLOCAMENTOCOR = 15;
 
+String maskImageFilePath = "maskfiles/abstract2.jpg";
+
 //Variaveis globais no contexto do ambiente
 PImage background;
 cameraInput camera;
@@ -20,7 +22,7 @@ void setup() {
     //instanciando o vetor FLuxo
     //Carrega imagem do background para ser a textura!
     size(640,480);
-    frameRate(15);
+    frameRate(30);
     try{
         print("\t############### INSTANCIANDO CAMERA #####################\n");
         //Instancia o controlador da camera 
@@ -29,7 +31,7 @@ void setup() {
         print("\t############### ERRO! NAO FOI POSSIVEL INSTANCIAR CAMERA!!#####################");
     }
     fluxoAmbiente = new float[ALTURA][LARGURA][2];
-    background = loadImage("orgycalidoscope.jpg");
+    background = loadImage(maskImageFilePath);
     background.resize(width,height);
 }
 
