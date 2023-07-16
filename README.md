@@ -24,12 +24,13 @@ The Webcam Motion Detection project is built using the Processing programming la
 4. The webcam feed will be displayed, and motion detection will start.
 5. Move in front of the webcam or introduce motion in the scene to trigger the drawing of pixels from the PNG image.
 6. Adjust the motion detection threshold or other parameters as desired.
+7. PS: YOU NEED THE APROPRIATE LIBRARIES TO RUN!
 
 ## Contributing
 Contributions are welcome! If you have suggestions, bug reports, or would like to contribute to the project, please follow the guidelines outlined in the CONTRIBUTING.md file.
 
 ## Credits
-This project is maintained by [Your Name]. If you have any questions or inquiries, please contact [your-email@example.com].
+This project is maintained by [Leandro Ramalho Motta Ferreira]. If you have any questions or inquiries, please contact [cajjunb@gmail.com].
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
