@@ -27,7 +27,7 @@ The Webcam Motion Detection project is built using the Processing programming la
 7. PS: YOU NEED THE APROPRIATE LIBRARIES TO RUN!
 
 ## Example of it's function:
-![Motion Detection](motion_detection.gif)
+![Motion Detection](motion-capture-example.gif)
 
 ## Contributing
 Contributions are welcome! If you have suggestions, bug reports, or would like to contribute to the project, please follow the guidelines outlined in the CONTRIBUTING.md file.
